@@ -5,7 +5,6 @@ Version **1.0.54**, prepared on **21 November 2026**. This is a Windows testing 
 ## Completed locally
 
 - **127 tests passed** on Linux, including real Tesseract fixtures, the capture routine with a substituted desktop boundary, exact notification filters, duplicate suppression, controller cancellation, XInput observation logic and actual Qt layout checks.
-- The creator credit was tested through 49 clicks, the reveal on click 50, and its reset. The revealed text is **Created by Dane V**.
 - Typed timing and mission-calibration edits, saved preferences, fixed window size, footer clearance and the Copy error dialog passed their Qt checks.
 - Ruff lint, formatting and Python compilation checks passed.
 - The main-window and watcher screenshots were captured from the actual Qt widgets, without starting a game, controller or scan.
