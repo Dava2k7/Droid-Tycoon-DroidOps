@@ -4,7 +4,7 @@ Version **1.0.54**, prepared on **21 November 2026**. This is a Windows testing 
 
 ## Completed locally
 
-- **126 tests passed** on Linux, including real Tesseract fixtures, the capture routine with a substituted desktop boundary, exact notification filters, duplicate suppression, controller cancellation, XInput observation logic and actual Qt layout checks.
+- **127 tests passed** on Linux, including real Tesseract fixtures, the capture routine with a substituted desktop boundary, exact notification filters, duplicate suppression, controller cancellation, XInput observation logic and actual Qt layout checks.
 - The creator credit was tested through 49 clicks, the reveal on click 50, and its reset. The revealed text is **Created by Dane V**.
 - Typed timing and mission-calibration edits, saved preferences, fixed window size, footer clearance and the Copy error dialog passed their Qt checks.
 - Ruff lint, formatting and Python compilation checks passed.
@@ -36,3 +36,7 @@ The reported full-PC restart has not been reproduced or diagnosed. Scanner limit
 The optional secondary OCR runtime attempted a Microsoft connection during earlier validation, and a request to disable telemetry did not establish that the connection was prevented. No successful secondary soak is claimed. It stays off by default; see [privacy](../PRIVACY.md).
 
 These notes record the checks and their limits. They are not a security certification or a promise of perfect recognition.
+
+## GitHub recognition-check correction
+
+The first Windows job passed 126 tests, then reported seven single-frame Diamond Mythic misses in 221 synthetic recognition cycles. Local Arial reproduction found a frame where the exact pair was pending the scanner's existing second-frame confirmation. The soak check now renders a second frame and exercises that confirmation before counting a miss, recording second-frame recoveries separately. It still fails for a pair not recognised or confirmed, and does not loosen the application's recognition rules. An Arial fixture regression brings the local suite to 127 passing tests. The corrected Windows jobs still need a rerun.

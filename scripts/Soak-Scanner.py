@@ -15,6 +15,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seconds", type=float, default=180)
     parser.add_argument("--report", default="artifacts/scanner-soak.json")
+    parser.add_argument("--font", type=Path, help="Font file for reproducing a platform fixture")
     parser.add_argument(
         "--secondary", action="store_true", help="Opt into the experimental third-party OCR runtime"
     )
@@ -25,7 +26,13 @@ def main():
     import psutil
     from PIL import Image, ImageDraw, ImageFont
     from tesserocr import OEM, PSM, PyTessBaseAPI
-    from droidops.droid_alert import Word, cautious_label_repair, matching_droids, recognise
+    from droidops.droid_alert import (
+        Word,
+        UncertainMatchConfirmation,
+        cautious_label_repair,
+        matching_droids,
+        recognise,
+    )
     from droidops.hybrid_droid_detection import RapidFallback
     from droidops.resources import asset_path
 
@@ -34,13 +41,14 @@ def main():
         if os.name == "nt"
         else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
     )
-    font = ImageFont.truetype(font_path, 30)
+    font = ImageFont.truetype(str(args.font or font_path), 30)
     process = psutil.Process()
     rapid = RapidFallback(enabled=args.secondary)
     if args.secondary and not rapid.enabled:
         raise RuntimeError("Secondary OCR could not initialise: " + str(rapid.disabled_reason))
     started = time.monotonic()
     samples, failures, cycles = [], [], 0
+    confirmation_recoveries = 0
     labels = [("Kyber", "Mythic"), ("Diamond", "Mythic"), ("Rainbow", "Legendary")]
     backgrounds = [(8, 12, 20), (45, 70, 100), (55, 25, 16)]
     with PyTessBaseAPI(
@@ -59,7 +67,27 @@ def main():
                 stroke_fill="black",
             )
             expected = f"{variant} {rarity}"
-            primary = recognise(ocr, None, (0, 0), image=image)
+            primary, uncertain = recognise(ocr, None, (0, 0), image=image, return_uncertain=True)
+            # The live scanner requires a second captured frame for ambiguous
+            # labels. Exercise that path instead of treating pending as lost.
+            if expected not in {m.pair for m in primary}:
+                confirmation = UncertainMatchConfirmation()
+                confirmation.confirm(uncertain, time.monotonic())
+                next_image = Image.new("RGB", image.size, backgrounds[cycles % len(backgrounds)])
+                ImageDraw.Draw(next_image).text(
+                    (12, 35),
+                    f"{variant} Droid {rarity} has spawned at the Sandcrawler",
+                    font=font,
+                    fill=(255, 170 + (cycles + 1) % 70, 220),
+                    stroke_width=1,
+                    stroke_fill="black",
+                )
+                second, pending = recognise(
+                    ocr, None, (0, 0), image=next_image, return_uncertain=True
+                )
+                primary += second + confirmation.confirm(pending, time.monotonic())
+                if expected in {m.pair for m in primary}:
+                    confirmation_recoveries += 1
             words = rapid.read(image, (0, 0), Word, cautious_label_repair, min_gap=0)
             secondary = matching_droids(words)
             if expected not in {m.pair for m in primary} or (
@@ -88,9 +116,11 @@ def main():
     warm = [s["rss_bytes"] for s in samples if s["seconds"] >= 30]
     report = {
         "platform": sys.platform,
+        "fixture_font": Path(args.font or font_path).name,
         "secondary_ocr_tested": args.secondary,
         "duration_seconds": round(time.monotonic() - started, 2),
         "cycles": cycles,
+        "second_frame_recoveries": confirmation_recoveries,
         "peak_rss_mb": round(max(s["rss_bytes"] for s in samples) / 2**20, 2),
         "warm_rss_span_mb": round((max(warm) - min(warm)) / 2**20, 2) if warm else None,
         "max_threads": max(s["threads"] for s in samples),

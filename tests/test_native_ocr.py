@@ -49,3 +49,15 @@ def test_coloured_notifications_keep_variant_and_rarity(ocr, background, green, 
         stroke_fill="black",
     )
     assert f"{variant} {rarity}" in {m.pair for m in recognise(ocr, None, (0, 0), image=image)}
+
+
+def test_arial_diamond_is_recognised_or_confirmed_on_next_frame(ocr):
+    from droidops.droid_alert import UncertainMatchConfirmation, recognise
+
+    confirmation = UncertainMatchConfirmation()
+    found = []
+    for index in (1, 2):
+        image = Image.open(Path(__file__).parent / "fixtures" / f"diamond-arial-{index}.png")
+        matches, pending = recognise(ocr, None, (0, 0), image=image, return_uncertain=True)
+        found.extend(matches + confirmation.confirm(pending, index / 10))
+    assert "Diamond Mythic" in {match.pair for match in found}
