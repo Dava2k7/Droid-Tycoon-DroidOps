@@ -2,7 +2,7 @@
 
 DroidOps is my Windows companion app for Droid Tycoon. It brings Droid Watch, Auto Scrap and the CB-23 mission loop into one compact desktop window.
 
-**Current version: 1.0.54 · Windows testing release · MIT open source**
+**Current version: 1.0.54 · Work In Progress · MIT open source**
 
 ![Danksy DroidOps main window](docs/images/droidops.png)
 
