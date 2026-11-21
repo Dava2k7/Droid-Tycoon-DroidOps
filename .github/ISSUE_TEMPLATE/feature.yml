@@ -1,0 +1,10 @@
+name: Feature idea
+description: Suggest an improvement to Danksy DroidOps.
+body:
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: What would you like to change?
+      description: Explain what you want to do and how it would help.
+    validations:
+      required: true

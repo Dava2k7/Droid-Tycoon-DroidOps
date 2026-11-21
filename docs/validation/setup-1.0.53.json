@@ -1,0 +1,20 @@
+{
+  "version": "1.0.53",
+  "tests_passed": 125,
+  "installer_bytes": 430912822,
+  "installer_sha256": "aa5045f603e056ce0b8e9ed585c93ed6b2aa8e5f0b37f73b1c3fc6f9f4cce8c4",
+  "critical_installer_payload_files_verified": [
+    "DroidOps.exe",
+    "droidops/app.py",
+    "droidops/xinput_status.py",
+    "runtime/pythonw.exe",
+    "runtime/python314.dll",
+    "runtime/Lib/site-packages/PySide6/QtWidgets.pyd",
+    "runtime/Lib/site-packages/vgamepad/win/vigem/client/x64/ViGEmClient.dll",
+    "droidops/assets/tessdata/eng.traineddata",
+    "droidops/assets/droid_alerts/diamond_mythic.wav",
+    "Driver/ViGEmBus_1.22.0_x64_x86_arm64.exe"
+  ],
+  "windows_execution_verified": false,
+  "fortnite_camera_response_verified": false
+}

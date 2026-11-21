@@ -1,0 +1,6 @@
+Droid Credit Symbols is a subset of GNU Unifont 15.0.01.
+Copyright (c) 1998-2022 Roman Czyborra, Paul Hardy, Qianqian Fang,
+Andrew Miller, Johnnie Weaver, David Corbett, Nils Moskopp,
+Rebecca Bettencourt, and other contributors.
+The subset is redistributed under the SIL Open Font License 1.1.
+See credit_font_license.txt in this directory.

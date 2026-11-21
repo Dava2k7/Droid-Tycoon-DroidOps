@@ -1,0 +1,26 @@
+{
+  "version": "1.0.54",
+  "tests_passed": 126,
+  "installer_bytes": 430915550,
+  "installer_sha256": "bd5e200bb57871edd5338a5d1fa9efbbe0d642eb912bcea89c545beaef6a0b52",
+  "critical_installer_payload_files_verified": [
+    "DroidOps.exe",
+    "droidops/__init__.py",
+    "droidops/app.py",
+    "droidops/xinput_status.py",
+    "runtime/pythonw.exe",
+    "runtime/python314.dll",
+    "runtime/Lib/site-packages/PySide6/QtWidgets.pyd",
+    "runtime/Lib/site-packages/vgamepad/win/vigem/client/x64/ViGEmClient.dll",
+    "droidops/assets/tessdata/eng.traineddata",
+    "droidops/assets/droid_alerts/diamond_mythic.wav",
+    "Driver/ViGEmBus_1.22.0_x64_x86_arm64.exe",
+    "Collect-Diagnostics.bat",
+    "scripts/Collect-Diagnostics.ps1",
+    "USER_GUIDE.md"
+  ],
+  "windows_execution_verified": false,
+  "fortnite_camera_response_verified": false,
+  "easter_egg_text": "Created by Dane V",
+  "screenshots": "Actual Qt views rendered on Linux; no game or controller session started."
+}

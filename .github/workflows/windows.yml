@@ -1,0 +1,100 @@
+name: Windows build
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: windows-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      VGAMEPAD_SKIP_VIGEMBUS_INSTALL: "true"
+      DROIDOPS_HEALTH_CHECK: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          architecture: x64
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-windows-lock.txt -r requirements-dev.txt
+      - name: Run behavioural tests and native OCR soak
+        run: |
+          python -m pytest -q
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/Soak-Scanner.py --seconds 30
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Check source formatting
+        run: |
+          python -m ruff check droidops scripts tests
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m ruff format --check droidops scripts tests launch.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Check diagnostic collector PowerShell syntax
+        shell: powershell
+        run: |
+          $tokens = $null
+          $parseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path scripts/Collect-Diagnostics.ps1), [ref]$tokens, [ref]$parseErrors) | Out-Null
+          if ($parseErrors.Count) { $parseErrors | Format-List; exit 1 }
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: compatibility-${{ matrix.os }}
+          path: artifacts/*.json
+          if-no-files-found: ignore
+  build:
+    needs: compatibility
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install installer tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes nsis p7zip-full
+      - name: Download and check pinned Windows inputs
+        run: python scripts/Fetch-Windows-Bundle.py --output bundle-inputs
+      - name: Assemble the offline Windows application
+        run: >-
+          python scripts/Assemble-Windows-Bundle.py
+          --wheels bundle-inputs/wheels
+          --resolution packaging/windows-bundle-lock.json
+          --runtime bundle-inputs/python-runtime.nupkg
+          --vgamepad bundle-inputs/vgamepad.tar.gz
+          --output offline-payload
+      - name: Compile and check Setup
+        shell: bash
+        run: |
+          mkdir -p release
+          version=$(python -c 'from droidops import __version__; print(__version__)')
+          setup="Danksy_DroidOps_${version}_Windows_Setup.exe"
+          python scripts/Build-Offline-Setup.py --payload offline-payload --compiler /usr/bin/makensis --output "release/$setup"
+          7z t "release/$setup"
+          (cd release && sha256sum "$setup" > SHA256SUMS.txt)
+          cp "docs/RELEASE_NOTES_${version}.md" release/RELEASE_NOTES.md
+      - name: Upload release packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: Danksy-DroidOps-Windows
+          path: release/*
+          compression-level: 0
+          if-no-files-found: error

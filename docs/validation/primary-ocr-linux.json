@@ -1,0 +1,11 @@
+{
+  "platform": "linux",
+  "secondary_ocr_tested": false,
+  "duration_seconds": 180.08,
+  "cycles": 1083,
+  "peak_rss_mb": 79.62,
+  "warm_rss_span_mb": 0.19,
+  "max_threads": 1,
+  "scope": "Synthetic OCR only; no Windows capture, virtual-controller driver or game exercised.",
+  "recognition_failure_count": 0
+}

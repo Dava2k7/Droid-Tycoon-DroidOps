@@ -1,0 +1,8 @@
+include *.md *.txt *.bat launch.py .gitignore .gitattributes
+recursive-include droidops/assets *
+recursive-include tests *.py
+recursive-include scripts *.py *.ps1
+recursive-include packaging *.iss *.nsi *.py *.exe *.txt *.json
+recursive-include docs *.md *.png *.json
+recursive-include third_party *.txt
+recursive-include .github *.yml
