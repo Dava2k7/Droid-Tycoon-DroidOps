@@ -1,4 +1,5 @@
 # Droid Tycoon - DroidOps by Danksy
+# DroidOps – Fortnite Droid Tycoon Companion Software
 
 DroidOps is my Windows companion app for Droid Tycoon. It brings Droid Watch, Auto Scrap and the CB-23 mission loop into one compact desktop window.
 
@@ -55,6 +56,9 @@ The game can be out of focus, but its watched area must remain visible. Minimisi
 Stop controller automation before editing interval or pulse. Click the number, type a value and press Enter. Pulse must be shorter than interval. Drag the header to move the main window; its size stays fixed.
 
 For a left-turn test, return to Fortnite, close the menus and stop moving the mouse. The test waits for the game to remain active for one second. If buttons work but the camera does not, check **Settings → Mouse and Keyboard → Lock Input Method as Mouse → Off** and try again. Windows stick confirmation means Windows received the axis; check the camera movement yourself before running a mission loop.
+
+## Download
+Scroll to the Releases section on the right-hand side of this GitHub repository to download the latest Windows installer.
 
 ## Testing status
 
