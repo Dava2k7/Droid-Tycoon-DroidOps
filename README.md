@@ -1,5 +1,4 @@
 # Droid Tycoon - DroidOps by Danksy
-# DroidOps – Fortnite Droid Tycoon Companion Software
 
 DroidOps is my Windows companion app for Droid Tycoon. It brings Droid Watch, Auto Scrap and the CB-23 mission loop into one compact desktop window.
 
