@@ -1,4 +1,4 @@
-# Danksy DroidOps
+# Droid Tycoon - DroidOps by Danksy
 
 DroidOps is my Windows companion app for Droid Tycoon. It brings Droid Watch, Auto Scrap and the CB-23 mission loop into one compact desktop window.
 
